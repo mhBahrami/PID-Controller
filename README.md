@@ -27,11 +27,11 @@ The simulator will provide you the cross track error (CTE) and the velocity (mph
 
 The source includes two major directory:
 
-- [`/src-`]()- Contains `json.hpp`,  `main.cpp`,  `PID.cpp`,  `PID.h`,  `Twiddle.cpp`, and  `Twiddle.h`.
+- [`/src-`](https://github.com/mhBahrami/PID-Controller/tree/master/src)- Contains [`json.hpp`](https://github.com/mhBahrami/PID-Controller/blob/master/src/json.hpp),  [`main.cpp`](https://github.com/mhBahrami/PID-Controller/blob/master/src/main.cpp),  [`PID.cpp`](https://github.com/mhBahrami/PID-Controller/blob/master/src/PID.cpp),  [`PID.h`](https://github.com/mhBahrami/PID-Controller/blob/master/src/PID.h),  [`Twiddle.cpp`](https://github.com/mhBahrami/PID-Controller/blob/master/src/Twiddle.cpp), and  [`Twiddle.h`](https://github.com/mhBahrami/PID-Controller/blob/master/src/Twiddle.h).
 
   > **Note:** I implemented twiddle algorithm but I didn't use it to produce the results.
 
-- [`/results`]()- Containing:
+- [`/results`](https://github.com/mhBahrami/PID-Controller/tree/master/results)- Containing:
 
   - The steering results with different PID coefficients values ( `*.csv` ).
   - The diagrams of steering value changes (`*jpg`).
@@ -46,6 +46,8 @@ std::vector<double> p = {0.1, 0.00, 0.0}; // {tau_p, tau_i, tau_d}
 ```
 
 with this controller the car moves in an oscillation path and the CTE increases more and more when time goes and finally the car crashed. The result is as follows:
+
+> **ASSUMPTION:** For the all tested controllers I kept the speed around 25.0.
 
 | The car crashes after iteration #570 |
 | :----------------------------------: |
@@ -92,11 +94,23 @@ std::vector<double> p = {0.01, 0.001, 1.0}; // {tau_p, tau_i, tau_d}
 
 And the result is as follows:
 
-| The car never crashes |
-| :-------------------: |
-|  ![alt text][pid_05]  |
+| The Final PID Controller |
+| :----------------------: |
+|   ![alt text][pid_05]    |
 
-You can see how the car is moving with this new PID controller [here]().
+You can see how the car is moving with this new PID controller [here](https://youtu.be/u4fcS__Bhmw).
 
-### License
+### Speed Control
 
+To control the speed I used another PID controller with the following values:
+
+```c++
+// PID controller
+std::vector<double> p = {0.20, 0.001, 2.0}; // {tau_p, tau_i, tau_d}
+```
+
+I used this controller to keep speed around **25.0**.
+
+## License
+
+[MIT License](https://github.com/mhBahrami/PID-Controller/blob/master/LICENSE).
