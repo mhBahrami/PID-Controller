@@ -38,14 +38,32 @@ int main()
 {
   uWS::Hub h;
 
+
+//  std::vector<double> p = {0.1, 0.00, 0.0};
+//  std::vector<double> p = {0.3, 0.00, 0.0};
+//  std::vector<double> p = {0.05, 0.00, 0.0};
+//  std::vector<double> p = {0.05, 0.00, 3.0};
+//  std::vector<double> p = {0.05, 0.002, 3.0};
+//  std::vector<double> p = {0.05, 0.005, 3.0};
+
+
+//  std::vector<double> p = {0.1, 0.00, 1.0};
+//  std::vector<double> p = {0.1, 0.00, 2.0};
+//  std::vector<double> p = {0.1, 0.00, 5.0};
+//  std::vector<double> p = {0.1, 0.00, 0.5};
+//  std::vector<double> p = {0.1, 0.001, 0.5};
+  std::vector<double> p = {0.1, 0.001, 1.0}; // best params so far found with twiddle on continuous loop
   PID pid_steer, pid_speed;
-  Twiddle twiddle;
-  iteration = 0;
-  //twiddle.init({0.0, 0.0, 0.0}, {1.0, 1.0, 1.0});
   ///* Initialize the pid variable.
-//  pid_steer.init(0.134611, 0.000270736, 3.05349);
-//  pid_speed.init(0.316731, 0.0000, 0.0226185);
-  h.onMessage([&pid_steer, &pid_speed, &twiddle](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
+  pid_steer.init(p[0], p[1], p[2]);
+  pid_speed.init(0.20, 0.001, 2.0);
+
+//  Twiddle twiddle;
+//  iteration = 0;
+//  std::vector<double> dp = {0.001, 0.001, 0.001};
+//  twiddle.init(p, dp);
+
+  h.onMessage([&pid_steer, &pid_speed/*, &twiddle*/](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
     // "42" at the start of the message means there's a websocket message event.
     // The 4 signifies a websocket message
     // The 2 signifies a websocket event
@@ -79,34 +97,28 @@ int main()
           speed_value = pid_speed.totalError();
 
           iteration++;
-          const bool _is_crashed = (speed < 0.6*final_speed) && iteration > 80;
-
-          if(iteration > 1000 || _is_crashed) {
-            if(_is_crashed) {
-              // Reset if the car crashed
-              twiddle.setBestError(numeric_limits<double>::max());
-
-              string msg = "42[\"reset\", {}]";
-              cout << msg << endl;
-              ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
-            }
-
-            twiddle.tune(pid_steer);
-            twiddle.print();
-          }
+          //cout << iteration << endl;
+//          if(iteration%10==0) {
+//            if(iteration == 10) {
+//              cout << "****************[Start Twiddle]****************" << endl;
+//            }
+//            twiddle.tune(pid_steer);
+//          }
+//          twiddle.print();
+          cout << "--> steer_value: " << steer_value << endl;
           ///**********************************************************************************
 
           // DEBUG
-          cout << " >> CTE: " << setw(10) << cte;
-          cout << " Steering Value: " << setw(10) << steer_value;
-          cout << " Error: " << setw(10) << pid_steer.totalError() << endl;
-          cout << " >> CTE: " << setw(10) << cte;
-          cout << " Throttle Value: " << setw(10) << steer_value;
-          cout << " Error: " << setw(10) << pid_steer.totalError() << endl << endl;
+//          cout << " >> CTE: " << setw(10) << cte;
+//          cout << " Steering Value: " << setw(10) << steer_value;
+//          cout << " Error: " << setw(10) << pid_steer.totalError() << endl;
+//          cout << " >> CTE: " << setw(10) << cte;
+//          cout << " Throttle Value: " << setw(10) << steer_value;
+//          cout << " Error: " << setw(10) << pid_steer.totalError() << endl << endl;
 
           json msgJson;
           msgJson["steering_angle"] = steer_value;
-          msgJson["throttle"] = speed_value;
+          msgJson["throttle"] = speed_value;//0.3;
           auto msg = "42[\"steer\"," + msgJson.dump() + "]";
           //cout << msg << endl;
           ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);

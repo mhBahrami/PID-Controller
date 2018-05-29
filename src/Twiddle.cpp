@@ -11,6 +11,7 @@ using namespace std;
 
 Twiddle::Twiddle() {
   _is_initialized = false;
+  _param_index = 0;
 }
 
 Twiddle::~Twiddle() = default;
@@ -106,8 +107,8 @@ void Twiddle::init(const std::vector<double> &parameters, const std::vector<doub
 }
 
 void Twiddle::tune(PID &controller) {
-  if(!_is_initialized) {
-    cout << endl << "RunTimeError: The object is not initialized!";
+  if (!_is_initialized) {
+    cout << endl << "RunTimeError: The object is not initialized!" << endl;
     cout << "To fix the issue, make sure you call \"Twiddle::init()\" before  \"Twiddle::tune()\"" << endl;
     throw;
   }
@@ -146,8 +147,8 @@ void Twiddle::setBestError(const double &error) {
 
 void Twiddle::print() {
   cout << ">> Parameters: [ ";
-  for (auto &param : _parameters) {
-    cout << left << setw(12) << param << " ";
+  for (auto &_param : _parameters) {
+    cout << left << setw(12) << _param << " ";
   }
-  cout << " ]" << endl;
+  cout << " ]"/* << endl*/;
 }
